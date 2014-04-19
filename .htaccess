@@ -1,0 +1,5 @@
+RewriteEngine On
+
+RewriteRule ^api.php/(([A-Za-z0-9_])*)$ api.php?username=$1 [NC]
+RewriteRule ^api/(([A-Za-z0-9_])*)$ api.php?username=$1 [NC]
+RewriteRule ^api$ api.php [NC]
