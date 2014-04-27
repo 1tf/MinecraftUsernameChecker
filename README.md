@@ -1,4 +1,4 @@
 MinecraftUsernameChecker
 ========================
 
-It checks wether usernames are available without only checking premium.
+Check usernames with 100% accuracy!
