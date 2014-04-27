@@ -1,6 +1,6 @@
 <?php
-    if(isset($_POST['username'])) {
-        $message = checkUsername($_POST['username']);
+    if(isset($_REQUEST['username'])) {
+        $message = checkUsername($_REQUEST['username']);
     }
 
     function checkUsername($username){
@@ -12,13 +12,14 @@
             $decoded = (array) json_decode($json);
             $firstProfile = (array) $decoded['profiles'][0];
             $name = $firstProfile['name'];
+            $cape = cape($username);
 
             if(empty($decoded['profiles'])){
                 return '<span style="color: green;">Username is available!</span>';
             }
             else{
                 if(!isset($firstProfile['demo'])){
-                    return '<span style="color: red;">Username is taken!</span>';
+                    return '<span style="color: red;">Username is taken '. $cape .'</span>';
                 }
                 else{
                     return '<span style="color: red;">Username is taken, but is not premium!</span>';
@@ -46,6 +47,32 @@
 
             return $json;
     }
+
+    function cape($username){
+        $nExists = (@$fp = fopen("http://skins.minecraft.net/MinecraftCloaks/" . $username . ".png", "r")) !== FALSE; 
+
+        //Optifine
+        
+        $ofexists = (@$offp = fopen("http://s.optifine.net/capes/" . $username . ".png", "r")) !== FALSE; 
+
+        if($ofexists == false && $nExists == false){
+            return " and has no cape!";
+        }
+
+        elseif($ofexists == true && $nExists == false){
+            return " and has an Optifine cape!";
+        }
+
+        elseif($ofexists == false && $nExists == true){
+            return " and has a Minecraft cape!";
+        }
+
+        elseif($ofexists == true && $nExists == true){
+            return " and has both a Minecraft and Optifine cape!";
+        }
+        fclose($fp);
+        fclose($offp); 
+    }
 ?>
 <html lang="en">
 <head>
@@ -68,20 +95,34 @@
             font-family: 'Minecraftia';
         }
     </style>
+
+    <script>
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-43185554-4']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; 
+
+      ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
 </head>
 <body>
 
         <div class="container">
             <div class="text-center">
-                <h1 class="minecraft-font">Minecraft Username Checker</h1>
-                <h4 class="text-muted">Created by jrneulight</h6>
+                <h1 class="minecraft-font">Minecraft Username/Cape Checker</h1>
+                <h4 class="text-muted">Created by jrneulight</h4>
             </div>
-            <br/>
             <br/>
             <div class="text-center" style="width: 400px; margin: 0 auto;">    
                 <h3><?php if(isset($message)){ echo $message; }?></h3>
                 <form method="post" action="">
-                    <input type="text" placeholder="Username" value="<?php if (isset($_POST['username'])) {echo $_POST['username'];} ?>" class="form-control" name="username" required style="height: 100px;width: 400px;font-size:250%;">
+                    <input type="text" placeholder="Username" value="<?php if (isset($_REQUEST['username'])) {echo $_REQUEST['username'];} ?>" class="form-control" name="username" required style="height: 100px;width: 400px;font-size:250%;">
                     <br/>
                     <input type="submit" class="btn btn-primary btn-lg" name="submit" value="Check">
                 </form>
@@ -89,13 +130,21 @@
             <hr>
             <h2 style="width: 590px;margin: 0 auto;" class="well well-sm text-center">Why are we better than all the others?</h2>
             
-            <div class="col-lg-6">
-              <h3>We don't just check for premium</h2>
+            <div class="col-lg-4">
+              <h3>We don't just check for premium</h3>
               <p>We actually check to see if the username is available, unlike like other Minecraft Username Checkers. It is 100% accurate, all of the time.</p>
+              <br/>
+              <span style="font-size:200%;"><center>Sponsered by:</center></span>
+              <center><img src="img/tb.png" style="width: 346px; height: 45px;"></center>
+              <span style="font-size:125%;"><center>minecraft.technobuffalo.com</center></span>
+              <br/>
+              <span style="font-size:100%;"><center>and</center></span>
+              <center><img src="img/mcc.png"></center>
+              <span style="font-size:125%;"><center>MC-Crime</center></span>
             </div>
 
-            <div class="col-lg-6">
-              <h3>Powerful & Simple API</h2>
+            <div class="col-lg-4">
+              <h3>Powerful & Simple API</h3>
               <p>The API is simple to use:
               <code>http://checkna.me/api/UsernameHere</code>
               <br/>
@@ -122,12 +171,36 @@
               </p>
             </div>
             
+
+            <div class="col-lg-4">
+              <h3>Awesome Cape API</h3>
+              <p>The Cape API is simple to use:
+              <code>http://checkna.me/cape/UsernameHere</code>
+              <br/>
+              <br/>
+              It will return:
+              <br/>
+              <br/>
+              <code>No Cape</code> - If the user has no cape
+              <br/>
+              <br/>
+              <code>Minecraft</code> - If the user has a Minecraft cape
+              <br/>
+              <br/>
+              <code>Optifine</code> - If the user has an Optifine cape
+              <br/>
+              <br/>
+              <code>Both</code> - If the user has a Minecraft cape and an Optifine cape
+              <br/>
+              <br/>
+              <code>No Username Given</code> - If no username was specified
+              </p>
+            </div>
+            
             </div>
 
         </div>
 
-        <br/>
-        <br/>
         <div style="margin: 0 auto; width: 92px;height: 26px;">
             <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
             <input type="hidden" name="cmd" value="_donations">

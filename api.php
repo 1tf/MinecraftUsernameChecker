@@ -1,6 +1,6 @@
 <?php
     if(isset($_GET['username'])) {
-        echo $message = checkUsername($_GET['username']);
+        echo $message = trim(checkUsername($_GET['username']));
     }
     else{
         echo $message = 'No Username Given';
